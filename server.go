@@ -1,0 +1,125 @@
+package fbot
+
+import (
+	"crypto/hmac"
+	"crypto/sha1"
+	"encoding/hex"
+	"encoding/json"
+	"io/ioutil"
+	"net/http"
+	"strings"
+)
+
+// Handler returns the handler to use for incoming messages from the
+// Facebook Messenger Platform.
+func Handler() http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		switch r.Method {
+		case "GET":
+			verifyToken(w, r)
+		case "POST":
+			receiveMessage(w, r)
+		default:
+			w.WriteHeader(http.StatusMethodNotAllowed)
+		}
+	}
+}
+
+func verifyToken(w http.ResponseWriter, r *http.Request) {
+	if r.FormValue("hub.verify_token") == config.VerifyToken {
+		w.Write([]byte(r.FormValue("hub.challenge")))
+	} else {
+		w.Write([]byte("Error; wrong verify token"))
+	}
+}
+
+type response struct {
+	Entries []entry `json:"entry"`
+}
+
+type entry struct {
+	Events []Event `json:"messaging"`
+}
+
+func receiveMessage(w http.ResponseWriter, r *http.Request) {
+	if r.Body == nil {
+		http.Error(w, "Error reading empty response body", http.StatusBadRequest)
+
+		return
+	}
+
+	defer r.Body.Close()
+
+	message, err := ioutil.ReadAll(r.Body)
+
+	if err != nil {
+		http.Error(w, "Error reading response body", http.StatusInternalServerError)
+
+		return
+	}
+
+	xHubSignature := r.Header.Get("x-hub-signature")
+
+	if xHubSignature == "" || !strings.HasPrefix(xHubSignature, "sha1=") {
+		http.Error(w, "Error getting integrity signature", http.StatusBadRequest)
+
+		return
+	}
+
+	xHubSignature = xHubSignature[5:] // Remove "sha1=" prefix.
+
+	if ok := verifySignature([]byte(xHubSignature), message); !ok {
+		http.Error(w, "Error checking message integrity", http.StatusBadRequest)
+
+		return
+	}
+
+	var res response
+
+	err = json.Unmarshal(message, &res)
+
+	if err != nil {
+		http.Error(w, "Error parsing response body format", http.StatusBadRequest)
+
+		return
+	}
+
+	dispatchEvents(res.Entries)
+}
+
+func verifySignature(signature, message []byte) bool {
+	mac := hmac.New(sha1.New, []byte(config.AppSecret))
+	mac.Write(message)
+
+	expectedSignature := mac.Sum(nil)
+
+	return hmac.Equal(expectedSignature, hexSignature(signature))
+}
+
+func hexSignature(signature []byte) []byte {
+	s := make([]byte, 20)
+
+	hex.Decode(s, signature)
+
+	return s
+}
+
+func dispatchEvents(entries []entry) {
+	for _, entry := range entries {
+		for _, event := range entry.Events {
+			dispatchEvent(event)
+		}
+	}
+}
+
+func dispatchEvent(event Event) {
+	var eventName string
+
+	if event.Message != nil {
+		eventName = "message"
+	}
+
+	if eventName != "" {
+		trigger(eventName, event)
+	}
+}
