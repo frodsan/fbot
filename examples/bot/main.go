@@ -16,6 +16,11 @@ func main() {
 	})
 
 	fbot.On("message", func(event fbot.Event) {
+		fmt.Println(event.Sender.ID)
+		fmt.Println(event.Recipient.ID)
+		fmt.Println(event.Timestamp)
+		fmt.Println(event.Message.Mid)
+		fmt.Println(event.Message.Seq)
 		fmt.Println(event.Message.Text)
 	})
 

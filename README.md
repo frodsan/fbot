@@ -76,16 +76,21 @@ Registers a `callback` for the given `eventName`.
 
 ```go
 fbot.On("message", func(event fbot.Event) {
-	event.Sender.ID
-	event.Recipient.ID
-	event.Timestamp
-	event.Message.Mid
-	event.Message.Seq
-	event.Message.Text
+	event.Sender.ID    // => 1234567890
+	event.Recipient.ID // => 0987654321
+	event.Timestamp    // => 1462966178037
+	event.Message.Mid  // => "mid.1234567890:41d102a3e1ae206a38"
+	event.Message.Seq  // => 41
+	event.Message.Text // => "Hello World!"
 })
 ```
 
 Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, `"postback"`, or `"optin"`.
+
+Development
+-----------
+
+To test the bot locally, use [ngrok].
 
 Design
 ------
@@ -100,3 +105,4 @@ fbot is released under the [MIT License].
 [Messenger Platform]: https://developers.facebook.com/docs/messenger-platform
 [MIT License]: http://opensource.org/licenses/MIT
 [hyperoslo/facebook-messenger]: https://github.com/hyperoslo/facebook-messenger
+[ngrok]: https://ngrok.com/
