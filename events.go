@@ -4,12 +4,12 @@ import "fmt"
 
 // Event represents the event fired by the webhook.
 type Event struct {
-	Sender    Sender    `json:"sender"`
-	Recipient Recipient `json:"recipient"`
-	Timestamp int64     `json:"timestamp,omitempty"`
-	Message   *Message  `json:"message"`
-	Delivery  *Delivery `json:"delivery"`
-	Postback  *Postback `json:"postback"`
+	Sender    Sender       `json:"sender"`
+	Recipient Recipient    `json:"recipient"`
+	Timestamp int64        `json:"timestamp,omitempty"`
+	Message   *MessageInfo `json:"message"`
+	Delivery  *Delivery    `json:"delivery"`
+	Postback  *Postback    `json:"postback"`
 }
 
 // Sender represents the user who sent the message.
@@ -22,8 +22,8 @@ type Recipient struct {
 	ID int64 `json:"id"`
 }
 
-// Message represents the message callback object.
-type Message struct {
+// MessageInfo represents the message callback object.
+type MessageInfo struct {
 	Mid         string       `json:"mid"`
 	Seq         int          `json:"seq"`
 	Text        string       `json:"text"`
