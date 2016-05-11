@@ -44,7 +44,7 @@ type Payload struct {
 // Delivery represents the message-delivered callback object.
 type Delivery struct {
 	Mids      []string `json:"mids"`
-	WaterMark int64    `json:"watermark"`
+	Watermark int64    `json:"watermark"`
 	Seq       int      `json:"seq"`
 }
 
