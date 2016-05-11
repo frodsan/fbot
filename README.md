@@ -46,6 +46,47 @@ func main() {
 }
 ```
 
+API
+---
+
+### fbot.Configure(c Config)
+
+Configures the bot with the application's access token,
+app secret, and verify token.
+
+```go
+fbot.Configure(fbot.Config{
+	AccessToken: os.Getenv("ACCESS_TOKEN"),
+	AppSecret:   os.Getenv("APP_SECRET"),
+	VerifyToken: os.Getenv("VERIFY_TOKEN"),
+})
+```
+
+## fbot.Handler()
+
+Returns the `http.Handler` that receives the request sent by the Messenger platform.
+
+```go
+http.Handle("/bot", fbot.Handler())
+```
+
+## fbot.On(eventName string, callback func(Event))
+
+Registers a `callback` for the given `eventName`.
+
+```go
+fbot.On("message", func(event fbot.Event) {
+	event.Sender.ID
+	event.Recipient.ID
+	event.Timestamp
+	event.Message.Mid
+	event.Message.Seq
+	event.Message.Text
+})
+```
+
+Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, `"postback"`, or `"optin"`.
+
 Design
 ------
 
