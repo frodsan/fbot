@@ -113,13 +113,20 @@ func dispatchEvents(entries []entry) {
 }
 
 func dispatchEvent(event Event) {
-	var eventName string
-
-	if event.Message != nil {
-		eventName = "message"
-	}
-
-	if eventName != "" {
+	if eventName := selectEvent(event); eventName != "" {
 		trigger(eventName, event)
+	}
+}
+
+func selectEvent(event Event) string {
+	switch {
+	case event.Message != nil:
+		return "message"
+	case event.Delivery != nil:
+		return "delivery"
+	case event.Postback != nil:
+		return "postback"
+	default:
+		return ""
 	}
 }
