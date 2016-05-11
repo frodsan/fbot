@@ -8,6 +8,8 @@ type Event struct {
 	Recipient Recipient `json:"recipient"`
 	Timestamp int64     `json:"timestamp,omitempty"`
 	Message   *Message  `json:"message"`
+	Delivery  *Delivery `json:"delivery"`
+	Postback  *Postback `json:"postback"`
 }
 
 // Sender represents the user who sent the message.
