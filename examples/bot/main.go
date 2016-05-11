@@ -31,6 +31,10 @@ func main() {
 		}
 	})
 
+	fbot.On("postback", func(event fbot.Event) {
+		fmt.Println(event.Postback.Payload)
+	})
+
 	http.Handle("/bot", fbot.Handler())
 
 	http.ListenAndServe(":4567", nil)

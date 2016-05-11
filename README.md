@@ -87,6 +87,10 @@ fbot.On("message", func(event fbot.Event) {
 	event.Message.Attachments[0].Type        // => "image"
 	event.Message.Attachments[0].Payload.URL // => https://scontent.xx.fbcdn.net/v/t34.0-12/...
 })
+
+fbot.On("postback", func(event fbot.Event) {
+	event.Postback.Payload // => "{foo:'foo',bar:'bar'}"
+})
 ```
 
 Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, `"postback"`, or `"optin"`.

@@ -20,7 +20,7 @@ type Recipient struct {
 	ID int64 `json:"id"`
 }
 
-// Message represents a Messenger text message.
+// Message represents the message callback object.
 type Message struct {
 	Mid         string       `json:"mid"`
 	Seq         int          `json:"seq"`
@@ -37,6 +37,11 @@ type Attachment struct {
 // Payload represents the attachment payload data.
 type Payload struct {
 	URL string `json:"url,omitempty"`
+}
+
+// Postback respresents the postback callback object.
+type Postback struct {
+	Payload string `json:"payload"`
 }
 
 var callbacks = make(map[string]func(Event))
