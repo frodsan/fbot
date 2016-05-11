@@ -79,6 +79,7 @@ fbot.On("message", func(event fbot.Event) {
 	event.Sender.ID    // => 1234567890
 	event.Recipient.ID // => 0987654321
 	event.Timestamp    // => 1462966178037
+
 	event.Message.Mid  // => "mid.1234567890:41d102a3e1ae206a38"
 	event.Message.Seq  // => 41
 	event.Message.Text // => "Hello World!"
