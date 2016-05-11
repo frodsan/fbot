@@ -27,12 +27,12 @@ type Message struct {
 	Text string `json:"text"`
 }
 
-var hooks = make(map[string]func(Event))
+var callbacks = make(map[string]func(Event))
 
 // On registers a hook for the given event.
-func On(eventName string, fn func(Event)) {
+func On(eventName string, callback func(Event)) {
 	if isPermitted(eventName) {
-		hooks[eventName] = fn
+		callbacks[eventName] = callback
 	} else {
 		panic(fmt.Sprintf("'%s' is not a valid event", eventName))
 	}
@@ -51,7 +51,7 @@ func isPermitted(eventName string) bool {
 }
 
 func trigger(key string, event Event) {
-	if fn, ok := hooks[key]; ok {
-		fn(event)
+	if callback, ok := callbacks[key]; ok {
+		callback(event)
 	}
 }
