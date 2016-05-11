@@ -22,6 +22,13 @@ func main() {
 		fmt.Println(event.Message.Mid)
 		fmt.Println(event.Message.Seq)
 		fmt.Println(event.Message.Text)
+
+		if len(event.Message.Attachments) != 0 {
+			for _, attachment := range event.Message.Attachments {
+				fmt.Println(attachment.Type)
+				fmt.Println(attachment.Payload.URL)
+			}
+		}
 	})
 
 	http.Handle("/bot", fbot.Handler())

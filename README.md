@@ -82,6 +82,9 @@ fbot.On("message", func(event fbot.Event) {
 	event.Message.Mid  // => "mid.1234567890:41d102a3e1ae206a38"
 	event.Message.Seq  // => 41
 	event.Message.Text // => "Hello World!"
+
+	event.Message.Attachments[0].Type        // => "image"
+	event.Message.Attachments[0].Payload.URL // => https://scontent.xx.fbcdn.net/v/t34.0-12/...
 })
 ```
 
