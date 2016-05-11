@@ -64,7 +64,7 @@ func On(eventName string, callback func(Event)) {
 	}
 }
 
-var permittedEvents = []string{"message", "delivery", "postback", "optin"}
+var permittedEvents = []string{"message", "delivery", "postback"}
 
 func isPermitted(eventName string) bool {
 	for _, e := range permittedEvents {

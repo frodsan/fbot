@@ -99,7 +99,7 @@ fbot.On("postback", func(event fbot.Event) {
 })
 ```
 
-Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, `"postback"`, or `"optin"`.
+Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, or `"postback"`.
 
 Configuration
 -------------
