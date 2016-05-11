@@ -39,6 +39,13 @@ type Payload struct {
 	URL string `json:"url,omitempty"`
 }
 
+// Delivery represents the message-delivered callback object.
+type Delivery struct {
+	Mids      []string `json:"mids"`
+	WaterMark int64    `json:"watermark"`
+	Seq       int      `json:"seq"`
+}
+
 // Postback respresents the postback callback object.
 type Postback struct {
 	Payload string `json:"payload"`

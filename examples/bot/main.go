@@ -31,6 +31,12 @@ func main() {
 		}
 	})
 
+	fbot.on("delivery", func(event fbot.Event) {
+		event.Delivery.Mids[0].Mid // => "mid.1458668856218:ed81099e15d3f4f233"
+		event.Delivery.Watermark   // => 1458668856253
+		event.Delivery.Seq         // => 37
+	})
+
 	fbot.On("postback", func(event fbot.Event) {
 		fmt.Println(event.Postback.Payload)
 	})
