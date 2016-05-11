@@ -87,6 +87,11 @@ fbot.On("message", func(event fbot.Event) {
 
 Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, `"postback"`, or `"optin"`.
 
+Configuration
+-------------
+
+Follow the [Messenger Platform quickstart] guide for set up the needed Facebook page and development app.
+
 Development
 -----------
 
@@ -102,7 +107,8 @@ License
 
 fbot is released under the [MIT License].
 
-[Messenger Platform]: https://developers.facebook.com/docs/messenger-platform
-[MIT License]: http://opensource.org/licenses/MIT
 [hyperoslo/facebook-messenger]: https://github.com/hyperoslo/facebook-messenger
+[Messenger Platform]: https://developers.facebook.com/docs/messenger-platform
+[Messenger Platform quickstart]: https://developers.facebook.com/docs/messenger-platform/quickstart
+[MIT License]: http://opensource.org/licenses/MIT
 [ngrok]: https://ngrok.com/
