@@ -32,9 +32,9 @@ func main() {
 	})
 
 	fbot.On("delivery", func(event fbot.Event) {
-		event.Delivery.Mids[0]   // => "mid.1458668856218:ed81099e15d3f4f233"
-		event.Delivery.Watermark // => 1458668856253
-		event.Delivery.Seq       // => 37
+		fmt.Println(event.Delivery.Mids[0])
+		fmt.Println(event.Delivery.Watermark)
+		fmt.Println(event.Delivery.Seq)
 	})
 
 	fbot.On("postback", func(event fbot.Event) {
