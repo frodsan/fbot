@@ -119,14 +119,15 @@ func dispatchEvent(event Event) {
 }
 
 func selectEvent(event Event) string {
-	switch {
-	case event.Message != nil:
-		return "message"
-	case event.Delivery != nil:
-		return "delivery"
-	case event.Postback != nil:
-		return "postback"
-	default:
-		return ""
+	var eventName string
+
+	if event.Message != nil {
+		eventName = "message"
+	} else if event.Delivery != nil {
+		eventName = "delivery"
+	} else if event.Postback != nil {
+		eventName = "postback"
 	}
+
+	return eventName
 }
