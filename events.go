@@ -1,7 +1,5 @@
 package fbot
 
-import "fmt"
-
 // Event represents the event fired by the webhook.
 type Event struct {
 	Sender    Sender       `json:"sender"`
@@ -51,33 +49,4 @@ type Delivery struct {
 // Postback respresents the postback callback object.
 type Postback struct {
 	Payload string `json:"payload"`
-}
-
-var callbacks = make(map[string]func(Event))
-
-// On registers a hook for the given event.
-func On(eventName string, callback func(Event)) {
-	if isPermitted(eventName) {
-		callbacks[eventName] = callback
-	} else {
-		panic(fmt.Sprintf("'%s' is not a valid event", eventName))
-	}
-}
-
-var permittedEvents = []string{"message", "delivery", "postback"}
-
-func isPermitted(eventName string) bool {
-	for _, e := range permittedEvents {
-		if e == eventName {
-			return true
-		}
-	}
-
-	return false
-}
-
-func trigger(key string, event Event) {
-	if callback, ok := callbacks[key]; ok {
-		callback(event)
-	}
 }

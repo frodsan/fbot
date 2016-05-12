@@ -12,28 +12,28 @@ import (
 
 // Handler returns the handler to use for incoming messages from the
 // Facebook Messenger Platform.
-func Handler() http.HandlerFunc {
+func Handler(bot *Bot) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
-			verifyToken(w, r)
+			verifyToken(bot.Config.VerifyToken, w, r)
 		case "POST":
-			receiveMessage(w, r)
+			receiveMessage(bot, w, r)
 		default:
 			w.WriteHeader(http.StatusMethodNotAllowed)
 		}
 	}
 }
 
-func verifyToken(w http.ResponseWriter, r *http.Request) {
-	if r.FormValue("hub.verify_token") == config.VerifyToken {
+func verifyToken(token string, w http.ResponseWriter, r *http.Request) {
+	if r.FormValue("hub.verify_token") == token {
 		w.Write([]byte(r.FormValue("hub.challenge")))
 	} else {
 		w.Write([]byte("Error; wrong verify token"))
 	}
 }
 
-type response struct {
+type receive struct {
 	Entries []entry `json:"entry"`
 }
 
@@ -41,7 +41,7 @@ type entry struct {
 	Events []Event `json:"messaging"`
 }
 
-func receiveMessage(w http.ResponseWriter, r *http.Request) {
+func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Error reading empty response body", http.StatusBadRequest)
 
@@ -66,17 +66,17 @@ func receiveMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	xHubSignature = xHubSignature[5:] // Remove "sha1=" prefix.
+	xHubSignature = xHubSignature[5:] // Remove "sha1=" prefix
 
-	if ok := verifySignature([]byte(xHubSignature), message); !ok {
+	if ok := verifySignature([]byte(xHubSignature), []byte(bot.Config.AppSecret), message); !ok {
 		http.Error(w, "Error checking message integrity", http.StatusBadRequest)
 
 		return
 	}
 
-	var res response
+	var rec receive
 
-	err = json.Unmarshal(message, &res)
+	err = json.Unmarshal(message, &rec)
 
 	if err != nil {
 		http.Error(w, "Error parsing response body format", http.StatusBadRequest)
@@ -84,11 +84,11 @@ func receiveMessage(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dispatchEvents(res.Entries)
+	dispatchEvents(bot, rec.Entries)
 }
 
-func verifySignature(signature, message []byte) bool {
-	mac := hmac.New(sha1.New, []byte(config.AppSecret))
+func verifySignature(signature, secret, message []byte) bool {
+	mac := hmac.New(sha1.New, secret)
 	mac.Write(message)
 
 	expectedSignature := mac.Sum(nil)
@@ -104,21 +104,21 @@ func hexSignature(signature []byte) []byte {
 	return s
 }
 
-func dispatchEvents(entries []entry) {
+func dispatchEvents(bot *Bot, entries []entry) {
 	for _, entry := range entries {
 		for _, event := range entry.Events {
-			dispatchEvent(event)
+			dispatchEvent(bot, &event)
 		}
 	}
 }
 
-func dispatchEvent(event Event) {
+func dispatchEvent(bot *Bot, event *Event) {
 	if eventName := selectEvent(event); eventName != "" {
-		trigger(eventName, event)
+		bot.trigger(eventName, event)
 	}
 }
 
-func selectEvent(event Event) string {
+func selectEvent(event *Event) string {
 	var eventName string
 
 	if event.Message != nil {

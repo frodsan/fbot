@@ -9,13 +9,13 @@ import (
 )
 
 func main() {
-	fbot.Configure(fbot.Config{
+	bot := fbot.NewBot(fbot.Config{
 		AccessToken: os.Getenv("ACCESS_TOKEN"),
 		AppSecret:   os.Getenv("APP_SECRET"),
 		VerifyToken: os.Getenv("VERIFY_TOKEN"),
 	})
 
-	fbot.On("message", func(event fbot.Event) {
+	bot.On("message", func(event *fbot.Event) {
 		fmt.Println(event.Sender.ID)
 		fmt.Println(event.Recipient.ID)
 		fmt.Println(event.Timestamp)
@@ -31,17 +31,17 @@ func main() {
 		}
 	})
 
-	fbot.On("delivery", func(event fbot.Event) {
+	bot.On("delivery", func(event *fbot.Event) {
 		fmt.Println(event.Delivery.Mids[0])
 		fmt.Println(event.Delivery.Watermark)
 		fmt.Println(event.Delivery.Seq)
 	})
 
-	fbot.On("postback", func(event fbot.Event) {
+	bot.On("postback", func(event *fbot.Event) {
 		fmt.Println(event.Postback.Payload)
 	})
 
-	http.Handle("/bot", fbot.Handler())
+	http.Handle("/bot", fbot.Handler(bot))
 
 	http.ListenAndServe(":4567", nil)
 }

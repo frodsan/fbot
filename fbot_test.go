@@ -9,17 +9,21 @@ func TestPanicIfEventNameIsInvalid(t *testing.T) {
 		}
 	}()
 
-	On("invalid", func(_ Event) {})
+	bot := NewBot(Config{})
+
+	bot.On("invalid", func(_ *Event) {})
 }
 
 func TestOKEventTrigger(t *testing.T) {
 	var ok bool
 
-	On("message", func(_ Event) {
+	bot := NewBot(Config{})
+
+	bot.On("message", func(_ *Event) {
 		ok = true
 	})
 
-	trigger("message", Event{})
+	bot.trigger("message", &Event{})
 
 	if !ok {
 		t.Error("Event must be called")
