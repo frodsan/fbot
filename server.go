@@ -16,7 +16,7 @@ func Handler(bot *Bot) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
-			verifyToken(bot.Config.VerifyToken, w, r)
+			verifyToken(bot, w, r)
 		case "POST":
 			receiveMessage(bot, w, r)
 		default:
@@ -25,8 +25,8 @@ func Handler(bot *Bot) http.HandlerFunc {
 	}
 }
 
-func verifyToken(token string, w http.ResponseWriter, r *http.Request) {
-	if r.FormValue("hub.verify_token") == token {
+func verifyToken(bot *Bot, w http.ResponseWriter, r *http.Request) {
+	if r.FormValue("hub.verify_token") == bot.Config.VerifyToken {
 		w.Write([]byte(r.FormValue("hub.challenge")))
 	} else {
 		w.Write([]byte("Error; wrong verify token"))
