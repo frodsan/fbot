@@ -30,17 +30,17 @@ import (
 )
 
 func main() {
-	fbot.Configure(fbot.Config{
+	bot := fbot.NewBot(fbot.Config{
 		AccessToken: os.Getenv("ACCESS_TOKEN"),
 		AppSecret:   os.Getenv("APP_SECRET"),
 		VerifyToken: os.Getenv("VERIFY_TOKEN"),
 	})
 
-	fbot.On("message", func(event fbot.Event) {
+	bot.On("message", func(event *fbot.Event) {
 		fmt.Println(event.Message.Text)
 	})
 
-	http.Handle("/bot", fbot.Handler())
+	http.Handle("/bot", fbot.Handler(bot))
 
 	http.ListenAndServe(":4567", nil)
 }
@@ -49,33 +49,33 @@ func main() {
 API
 ---
 
-### fbot.Configure(c Config)
+### fbot.NewBot(c Config)
 
-Configures the bot with the application's access token,
+NewBot creates a new instance of a bot with the application's access token,
 app secret, and verify token.
 
 ```go
-fbot.Configure(fbot.Config{
+bot := fbot.NewBot(fbot.Config{
 	AccessToken: os.Getenv("ACCESS_TOKEN"),
 	AppSecret:   os.Getenv("APP_SECRET"),
 	VerifyToken: os.Getenv("VERIFY_TOKEN"),
 })
 ```
 
-## fbot.Handler()
+## fbot.Handler(bot *fb.Bot)
 
 Returns the `http.Handler` that receives the request sent by the Messenger platform.
 
 ```go
-http.Handle("/bot", fbot.Handler())
+http.Handle("/bot", fbot.Handler(bot))
 ```
 
-## fbot.On(eventName string, callback func(Event))
+## (\*fb.Bot) On(eventName string, callback func(\*Event))
 
 Registers a `callback` for the given `eventName`.
 
 ```go
-fbot.On("message", func(event fbot.Event) {
+bot.On("message", func(event *fbot.Event) {
 	event.Sender.ID    // => 1234567890
 	event.Recipient.ID // => 0987654321
 	event.Timestamp    // => 1462966178037
@@ -88,13 +88,13 @@ fbot.On("message", func(event fbot.Event) {
 	event.Message.Attachments[0].Payload.URL // => https://scontent.xx.fbcdn.net/v/t34.0-12/...
 })
 
-fbot.On("delivery", func(event fbot.Event) {
+bot.On("delivery", func(event *fbot.Event) {
 	event.Delivery.Mids[0]   // => "mid.1458668856218:ed81099e15d3f4f233"
 	event.Delivery.Watermark // => 1458668856253
 	event.Delivery.Seq       // => 37
 })
 
-fbot.On("postback", func(event fbot.Event) {
+bot.On("postback", func(event *fbot.Event) {
 	event.Postback.Payload // => "{foo:'foo',bar:'bar'}"
 })
 ```
