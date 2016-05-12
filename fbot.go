@@ -3,7 +3,7 @@ package fbot
 import "fmt"
 
 // Version is the version of the library.
-const Version = "0.0.1.alpha"
+const Version = "0.0.1"
 
 // Bot is the object that receives and sends
 // messages to the Messenger Platform.
