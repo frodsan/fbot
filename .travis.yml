@@ -6,4 +6,5 @@ go:
   - 1.6
   - tip
 
+install: echo Hi!
 script: go test
