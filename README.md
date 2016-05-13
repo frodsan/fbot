@@ -112,7 +112,7 @@ bot.On(fbot.EventPostback, func(event *fbot.Event) {
 
 Sent messages through the Messenger Platform.
 
-```
+```go
 bot.Deliver(fbot.DeliverParams{
 	Recipient: &fbot.User{
 		ID: 1234567890
