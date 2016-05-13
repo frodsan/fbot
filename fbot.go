@@ -8,7 +8,7 @@ import (
 )
 
 // Version is the version of the library.
-const Version = "0.0.1"
+const Version = "0.0.2"
 
 const (
 	// EventMessage represents the message event.
