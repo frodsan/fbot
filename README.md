@@ -1,6 +1,8 @@
 fbot
 ====
 
+[![Build Status](https://travis-ci.org/frodsan/fbot.svg?branch=master)](https://travis-ci.org/frodsan/fbot)
+
 Bots for Facebook Messenger.
 
 Description
