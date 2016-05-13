@@ -41,14 +41,6 @@ func (bot *Bot) On(eventName string, callback func(*Event)) {
 }
 
 func (bot Bot) trigger(event *Event) {
-	eventName := selectEvent(event)
-
-	if callback, ok := bot.Callbacks[eventName]; ok {
-		callback(event)
-	}
-}
-
-func selectEvent(event *Event) string {
 	var eventName string
 
 	if event.Message != nil {
@@ -57,7 +49,11 @@ func selectEvent(event *Event) string {
 		eventName = EventDelivery
 	} else if event.Postback != nil {
 		eventName = EventPostback
+	} else {
+		return
 	}
 
-	return eventName
+	if callback, ok := bot.Callbacks[eventName]; ok {
+		callback(event)
+	}
 }
