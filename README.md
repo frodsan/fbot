@@ -36,7 +36,7 @@ func main() {
 		VerifyToken: os.Getenv("VERIFY_TOKEN"),
 	})
 
-	bot.On("message", func(event *fbot.Event) {
+	bot.On(fbot.EventMessage, func(event *fbot.Event) {
 		fmt.Println(event.Message.Text)
 	})
 
@@ -75,7 +75,7 @@ http.Handle("/bot", fbot.Handler(bot))
 Registers a `callback` for the given `eventName`.
 
 ```go
-bot.On("message", func(event *fbot.Event) {
+bot.On(fbot.EventMessage, func(event *fbot.Event) {
 	event.Sender.ID    // => 1234567890
 	event.Recipient.ID // => 0987654321
 	event.Timestamp    // => 1462966178037
@@ -88,18 +88,16 @@ bot.On("message", func(event *fbot.Event) {
 	event.Message.Attachments[0].Payload.URL // => https://scontent.xx.fbcdn.net/v/t34.0-12/...
 })
 
-bot.On("delivery", func(event *fbot.Event) {
+bot.On(fbot.EventDelivery, func(event *fbot.Event) {
 	event.Delivery.Mids[0]   // => "mid.1458668856218:ed81099e15d3f4f233"
 	event.Delivery.Watermark // => 1458668856253
 	event.Delivery.Seq       // => 37
 })
 
-bot.On("postback", func(event *fbot.Event) {
+bot.On(fbot.EventPostback, func(event *fbot.Event) {
 	event.Postback.Payload // => "{foo:'foo',bar:'bar'}"
 })
 ```
-
-Panics if `eventName` is not one of the following: `"message"`, `"delivery"`, or `"postback"`.
 
 Configuration
 -------------
