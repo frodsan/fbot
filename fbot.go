@@ -1,5 +1,12 @@
 package fbot
 
+import (
+	"bytes"
+	"encoding/json"
+	"fmt"
+	"net/http"
+)
+
 // Version is the version of the library.
 const Version = "0.0.1"
 
@@ -37,36 +44,33 @@ func NewBot(config Config) *Bot {
 
 // Event represents the event fired by the webhook.
 type Event struct {
-	Sender    Sender       `json:"sender"`
-	Recipient Recipient    `json:"recipient"`
-	Timestamp int64        `json:"timestamp,omitempty"`
-	Message   *MessageInfo `json:"message"`
-	Delivery  *Delivery    `json:"delivery"`
-	Postback  *Postback    `json:"postback"`
+	Sender    *User     `json:"sender"`
+	Recipient *User     `json:"recipient"`
+	Timestamp int64     `json:"timestamp,omitempty"`
+	Message   *Message  `json:"message"`
+	Delivery  *Delivery `json:"delivery"`
+	Postback  *Postback `json:"postback"`
 }
 
-// Sender represents the user who sent the message.
-type Sender struct {
-	ID int64 `json:"id"`
+// User represents the user that acts like sender or recipient.
+type User struct {
+	ID          int64  `json:"id,omitempty"`
+	PhoneNumber string `json:"phone_number,omitempty"`
 }
 
-// Recipient represents the user who the message was sent to.
-type Recipient struct {
-	ID int64 `json:"id"`
-}
-
-// MessageInfo represents the message callback object.
-type MessageInfo struct {
-	Mid         string       `json:"mid"`
-	Seq         int          `json:"seq"`
-	Text        string       `json:"text"`
-	Attachments []Attachment `json:"attachments"`
+// Message represents the message callback object.
+type Message struct {
+	Mid         string        `json:"mid,omitempty"`
+	Seq         int           `json:"seq,omitempty"`
+	Text        string        `json:"text,omitempty"`
+	Attachment  *Attachment   `json:"attachment,omitempty"`
+	Attachments []*Attachment `json:"attachments,omitempty"`
 }
 
 // Attachment represents the attachment object included in the message.
 type Attachment struct {
-	Type    string  `json:"type"`
-	Payload Payload `json:"payload"`
+	Type    string   `json:"type"`
+	Payload *Payload `json:"payload"`
 }
 
 // Payload represents the attachment payload data.
@@ -107,4 +111,31 @@ func (bot Bot) trigger(event *Event) {
 	if callback, ok := bot.Callbacks[eventName]; ok {
 		callback(event)
 	}
+}
+
+const baseURL = "https://graph.facebook.com/v2.6/me/messages?access_token=%s"
+
+// DeliverParams represents the message params sent by deliver.
+type DeliverParams struct {
+	Recipient *User    `json:"recipient"`
+	Message   *Message `json:"message"`
+}
+
+// Deliver uses the Send API to deliver messages.
+func (bot Bot) Deliver(params DeliverParams) error {
+	url := fmt.Sprintf(baseURL, bot.Config.AccessToken)
+
+	json, err := json.Marshal(&params)
+
+	if err != nil {
+		return err
+	}
+
+	_, err = http.Post(url, "application/json", bytes.NewBuffer(json))
+
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

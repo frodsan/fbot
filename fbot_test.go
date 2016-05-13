@@ -11,7 +11,7 @@ func TestOKEventTrigger(t *testing.T) {
 		ok = true
 	})
 
-	bot.trigger(&Event{Message: &MessageInfo{}})
+	bot.trigger(&Event{Message: &Message{}})
 
 	if !ok {
 		t.Error("Event must be called")

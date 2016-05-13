@@ -29,6 +29,13 @@ func main() {
 				fmt.Println(attachment.Payload.URL)
 			}
 		}
+
+		bot.Deliver(fbot.DeliverParams{
+			Recipient: event.Sender,
+			Message: &fbot.Message{
+				Text: event.Message.Text,
+			},
+		})
 	})
 
 	bot.On(fbot.EventDelivery, func(event *fbot.Event) {

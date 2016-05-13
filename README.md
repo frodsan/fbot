@@ -40,6 +40,13 @@ func main() {
 
 	bot.On(fbot.EventMessage, func(event *fbot.Event) {
 		fmt.Println(event.Message.Text)
+
+		bot.Deliver(fbot.DeliverParams{
+			Recipient: event.Sender,
+			Message: &fbot.Message{
+				Text: event.Message.Text,
+			},
+		})
 	})
 
 	http.Handle("/bot", fbot.Handler(bot))
@@ -72,7 +79,7 @@ Returns the `http.Handler` that receives the request sent by the Messenger platf
 http.Handle("/bot", fbot.Handler(bot))
 ```
 
-## (\*fb.Bot) On(eventName string, callback func(\*Event))
+## (\*fbot.Bot) On(eventName string, callback func(\*Event))
 
 Registers a `callback` for the given `eventName`.
 
@@ -98,6 +105,21 @@ bot.On(fbot.EventDelivery, func(event *fbot.Event) {
 
 bot.On(fbot.EventPostback, func(event *fbot.Event) {
 	event.Postback.Payload // => "{foo:'foo',bar:'bar'}"
+})
+```
+
+## (fbot.Bot) Deliver(params fbot.DeliverParams) error
+
+Sent messages through the Messenger Platform.
+
+```
+bot.Deliver(fbot.DeliverParams{
+	Recipient: &fbot.User{
+		ID: 1234567890
+	},
+	Message: &fbot.Message{
+		Text: "Hey!",
+	},
 })
 ```
 
