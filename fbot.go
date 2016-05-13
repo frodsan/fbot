@@ -1,9 +1,16 @@
 package fbot
 
-import "fmt"
-
 // Version is the version of the library.
 const Version = "0.0.1"
+
+const (
+	// EventMessage represents the message event.
+	EventMessage = "message"
+	// EventDelivery represents the message-delivery event.
+	EventDelivery = "delivery"
+	// EventPostback represents the postback event.
+	EventPostback = "postback"
+)
 
 // Bot is the object that receives and sends
 // messages to the Messenger Platform.
@@ -30,27 +37,27 @@ func NewBot(config Config) *Bot {
 
 // On registers a callback for the given eventName.
 func (bot *Bot) On(eventName string, callback func(*Event)) {
-	if isValidEvent(eventName) {
-		bot.Callbacks[eventName] = callback
-	} else {
-		panic(fmt.Sprintf("'%s' is not a valid event", eventName))
-	}
+	bot.Callbacks[eventName] = callback
 }
 
-var validEvents = []string{"message", "delivery", "postback"}
+func (bot Bot) trigger(event *Event) {
+	eventName := selectEvent(event)
 
-func isValidEvent(eventName string) bool {
-	for _, e := range validEvents {
-		if e == eventName {
-			return true
-		}
-	}
-
-	return false
-}
-
-func (bot Bot) trigger(eventName string, event *Event) {
 	if callback, ok := bot.Callbacks[eventName]; ok {
 		callback(event)
 	}
+}
+
+func selectEvent(event *Event) string {
+	var eventName string
+
+	if event.Message != nil {
+		eventName = EventMessage
+	} else if event.Delivery != nil {
+		eventName = EventDelivery
+	} else if event.Postback != nil {
+		eventName = EventPostback
+	}
+
+	return eventName
 }

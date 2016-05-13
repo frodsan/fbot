@@ -84,7 +84,7 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	dispatchEvents(bot, rec.Entries)
+	triggerEvents(bot, rec.Entries)
 }
 
 func verifySignature(signature, secret, message []byte) bool {
@@ -104,30 +104,10 @@ func hexSignature(signature []byte) []byte {
 	return s
 }
 
-func dispatchEvents(bot *Bot, entries []entry) {
+func triggerEvents(bot *Bot, entries []entry) {
 	for _, entry := range entries {
 		for _, event := range entry.Events {
-			dispatchEvent(bot, &event)
+			bot.trigger(&event)
 		}
 	}
-}
-
-func dispatchEvent(bot *Bot, event *Event) {
-	if eventName := selectEvent(event); eventName != "" {
-		bot.trigger(eventName, event)
-	}
-}
-
-func selectEvent(event *Event) string {
-	var eventName string
-
-	if event.Message != nil {
-		eventName = "message"
-	} else if event.Delivery != nil {
-		eventName = "delivery"
-	} else if event.Postback != nil {
-		eventName = "postback"
-	}
-
-	return eventName
 }

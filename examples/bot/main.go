@@ -15,7 +15,7 @@ func main() {
 		VerifyToken: os.Getenv("VERIFY_TOKEN"),
 	})
 
-	bot.On("message", func(event *fbot.Event) {
+	bot.On(fbot.EventMessage, func(event *fbot.Event) {
 		fmt.Println(event.Sender.ID)
 		fmt.Println(event.Recipient.ID)
 		fmt.Println(event.Timestamp)
@@ -31,13 +31,13 @@ func main() {
 		}
 	})
 
-	bot.On("delivery", func(event *fbot.Event) {
+	bot.On(fbot.EventDelivery, func(event *fbot.Event) {
 		fmt.Println(event.Delivery.Mids[0])
 		fmt.Println(event.Delivery.Watermark)
 		fmt.Println(event.Delivery.Seq)
 	})
 
-	bot.On("postback", func(event *fbot.Event) {
+	bot.On(fbot.EventPostback, func(event *fbot.Event) {
 		fmt.Println(event.Postback.Payload)
 	})
 
