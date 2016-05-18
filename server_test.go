@@ -104,24 +104,3 @@ func TestReceiveWithEmptySignature(t *testing.T) {
 		t.Errorf("Expected status %d; got %d", http.StatusBadRequest, res.StatusCode)
 	}
 }
-
-func TestReceiveMessage(t *testing.T) {
-	bot := NewBot(Config{})
-
-	server := httptest.NewServer(Handler(bot))
-
-	defer server.Close()
-
-	var json = []byte(`{"object":"page","entry":[{"id":"1726989104239153","time":1463564888322,"messaging":[{"sender":{"id":"117842461964948"},"recipient":{"id":"1726989104239153"},"timestamp":1463563811474,"message":{"mid":"mid.1463563811462:9bff5c416e86887852","seq":8,"text":"hio"}}]}]}`)
-
-	res, err := http.Post(server.URL, "application/json", bytes.NewBuffer(json))
-
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	if res.StatusCode != http.StatusBadRequest {
-		t.Errorf("Expected status %d; got %d", http.StatusBadRequest, res.StatusCode)
-	}
-
-}

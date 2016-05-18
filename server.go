@@ -6,7 +6,6 @@ import (
 	"encoding/hex"
 	"encoding/json"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"strings"
 )
@@ -31,7 +30,6 @@ func verifyToken(bot *Bot, w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(r.FormValue("hub.challenge")))
 	} else {
 		w.Write([]byte("Error; wrong verify token"))
-		log.Println("Error; wrong verify token")
 	}
 }
 
@@ -49,28 +47,21 @@ type entry struct {
 func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Error reading empty response body", http.StatusBadRequest)
-		log.Println("Error reading empty response body")
-
 		return
 	}
 
 	defer r.Body.Close()
 
 	message, err := ioutil.ReadAll(r.Body)
-	log.Println(message)
 
 	if err != nil {
 		http.Error(w, "Error reading response body", http.StatusInternalServerError)
-		log.Println("Error reading response body")
-
 		return
 	}
 	xHubSignature := r.Header.Get("x-hub-signature")
 
 	if xHubSignature == "" || !strings.HasPrefix(xHubSignature, "sha1=") {
 		http.Error(w, "Error getting integrity signature", http.StatusBadRequest)
-		log.Println("Error getting integrity signature")
-
 		return
 	}
 
@@ -78,8 +69,6 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 
 	if ok := verifySignature([]byte(xHubSignature), []byte(bot.Config.AppSecret), message); !ok {
 		http.Error(w, "Error checking message integrity", http.StatusBadRequest)
-		log.Println("Error checking message integrity")
-
 		return
 	}
 	var rec receive
@@ -88,8 +77,6 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Error parsing response body format", http.StatusBadRequest)
-		log.Println("Error parsing response body format")
-
 		return
 	}
 
