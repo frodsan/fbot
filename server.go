@@ -57,6 +57,7 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 
 	message, err := ioutil.ReadAll(r.Body)
+	log.Println(message)
 
 	if err != nil {
 		http.Error(w, "Error reading response body", http.StatusInternalServerError)
@@ -64,7 +65,6 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
 	xHubSignature := r.Header.Get("x-hub-signature")
 
 	if xHubSignature == "" || !strings.HasPrefix(xHubSignature, "sha1=") {
@@ -82,7 +82,6 @@ func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
 
 		return
 	}
-
 	var rec receive
 
 	err = json.Unmarshal(message, &rec)

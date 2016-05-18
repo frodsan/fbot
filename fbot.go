@@ -54,16 +54,16 @@ type Event struct {
 
 // User represents the user that acts like sender or recipient.
 type User struct {
-	ID          int64  `json:"id,omitempty"`
+	ID          string `json:"id,omitempty"`
 	PhoneNumber string `json:"phone_number,omitempty"`
 }
 
 // Message represents the message callback object.
 type Message struct {
-	Mid         string        `json:"mid,omitempty"`
-	Seq         int           `json:"seq,omitempty"`
-	Text        string        `json:"text,omitempty"`
-	Attachment  *Attachment   `json:"attachment,omitempty"`
+	Mid  string `json:"mid,omitempty"`
+	Seq  int    `json:"seq,omitempty"`
+	Text string `json:"text,omitempty"`
+	//	Attachment  *Attachment   `json:"attachment,omitempty"`
 	Attachments []*Attachment `json:"attachments,omitempty"`
 }
 
