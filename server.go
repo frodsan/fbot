@@ -41,6 +41,8 @@ type receive struct {
 }
 
 type entry struct {
+	ID     string  `json:"id"`
+	Time   int64   `json:"time"`
 	Events []Event `json:"messaging"`
 }
 
