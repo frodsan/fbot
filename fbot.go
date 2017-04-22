@@ -54,7 +54,7 @@ type Event struct {
 
 // User represents the user that acts like sender or recipient.
 type User struct {
-	ID          int64  `json:"id,omitempty"`
+	ID          string `json:"id,omitempty"`
 	PhoneNumber string `json:"phone_number,omitempty"`
 }
 

@@ -34,17 +34,19 @@ func verifyToken(bot Bot, w http.ResponseWriter, r *http.Request) {
 }
 
 type receive struct {
+	Object  string  `json:"object"`
 	Entries []entry `json:"entry"`
 }
 
 type entry struct {
+	ID     string  `json:"id"`
+	Time   int64   `json:"time"`
 	Events []Event `json:"messaging"`
 }
 
 func receiveMessage(bot Bot, w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Error reading empty response body", http.StatusBadRequest)
-
 		return
 	}
 
@@ -54,15 +56,12 @@ func receiveMessage(bot Bot, w http.ResponseWriter, r *http.Request) {
 
 	if err != nil {
 		http.Error(w, "Error reading response body", http.StatusInternalServerError)
-
 		return
 	}
-
 	xHubSignature := r.Header.Get("x-hub-signature")
 
 	if xHubSignature == "" || !strings.HasPrefix(xHubSignature, "sha1=") {
 		http.Error(w, "Error getting integrity signature", http.StatusBadRequest)
-
 		return
 	}
 
@@ -70,17 +69,14 @@ func receiveMessage(bot Bot, w http.ResponseWriter, r *http.Request) {
 
 	if ok := verifySignature([]byte(xHubSignature), []byte(bot.Config.AppSecret), message); !ok {
 		http.Error(w, "Error checking message integrity", http.StatusBadRequest)
-
 		return
 	}
-
 	var rec receive
 
 	err = json.Unmarshal(message, &rec)
 
 	if err != nil {
 		http.Error(w, "Error parsing response body format", http.StatusBadRequest)
-
 		return
 	}
 
