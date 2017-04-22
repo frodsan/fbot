@@ -12,7 +12,7 @@ import (
 
 // Handler returns the handler to use for incoming messages from the
 // Facebook Messenger Platform.
-func Handler(bot *Bot) http.HandlerFunc {
+func Handler(bot Bot) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		switch r.Method {
 		case "GET":
@@ -25,7 +25,7 @@ func Handler(bot *Bot) http.HandlerFunc {
 	}
 }
 
-func verifyToken(bot *Bot, w http.ResponseWriter, r *http.Request) {
+func verifyToken(bot Bot, w http.ResponseWriter, r *http.Request) {
 	if r.FormValue("hub.verify_token") == bot.Config.VerifyToken {
 		w.Write([]byte(r.FormValue("hub.challenge")))
 	} else {
@@ -41,7 +41,7 @@ type entry struct {
 	Events []Event `json:"messaging"`
 }
 
-func receiveMessage(bot *Bot, w http.ResponseWriter, r *http.Request) {
+func receiveMessage(bot Bot, w http.ResponseWriter, r *http.Request) {
 	if r.Body == nil {
 		http.Error(w, "Error reading empty response body", http.StatusBadRequest)
 
@@ -104,7 +104,7 @@ func hexSignature(signature []byte) []byte {
 	return s
 }
 
-func triggerEvents(bot *Bot, entries []entry) {
+func triggerEvents(bot Bot, entries []entry) {
 	for _, entry := range entries {
 		for _, event := range entry.Events {
 			bot.trigger(&event)

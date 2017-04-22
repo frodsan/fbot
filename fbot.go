@@ -35,8 +35,8 @@ type Config struct {
 }
 
 // NewBot creates a new instance of Bot.
-func NewBot(config Config) *Bot {
-	return &Bot{
+func NewBot(config Config) Bot {
+	return Bot{
 		Config:    &config,
 		Callbacks: make(map[string]func(*Event)),
 	}
