@@ -7,9 +7,6 @@ import (
 	"net/http"
 )
 
-// Version is the version of the library.
-const Version = "0.0.2"
-
 const (
 	// EventMessage represents the message event.
 	EventMessage = "message"
