@@ -5,11 +5,7 @@ import "testing"
 func TestOKEventTrigger(t *testing.T) {
 	var ok bool
 
-	bot := NewBot(func(bot *Bot) {
-		bot.AccessToken = "AccessToken"
-		bot.AppSecret = "AppSecret"
-		bot.VerifyToken = "VerifyToken"
-	})
+	bot := NewBot()
 
 	bot.On("event", func() {
 		ok = true

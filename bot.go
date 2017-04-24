@@ -7,16 +7,10 @@ type Bot struct {
 	Callbacks   map[string]func()
 }
 
-func NewBot(options ...func(*Bot)) Bot {
-	bot := Bot{
+func NewBot() Bot {
+	return Bot{
 		Callbacks: make(map[string]func()),
 	}
-
-	for _, option := range options {
-		option(&bot)
-	}
-
-	return bot
 }
 
 func (bot Bot) On(event string, callback func()) {
