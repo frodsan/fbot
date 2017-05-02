@@ -30,7 +30,7 @@ func TestMethodNotAllowed(t *testing.T) {
 func TestWrongVerifyMode(t *testing.T) {
 	queryParams := url.Values{"mode": {"invalid"}}
 
-	req, eres := http.NewRequest("GET", "/webhook"+queryParams.Encode(), nil)
+	req, eres := http.NewRequest("GET", "/webhook?"+queryParams.Encode(), nil)
 
 	if eres != nil {
 		t.Fatal(eres)
