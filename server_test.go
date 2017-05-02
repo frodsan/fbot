@@ -22,6 +22,6 @@ func TestMethodNotAllowed(t *testing.T) {
 	handler.ServeHTTP(rr, req)
 
 	if status := rr.Code; status != http.StatusMethodNotAllowed {
-		t.Errorf("handler returned wrong status code: got %v expected %v", status, http.StatusMethodNotAllowed)
+		t.Errorf("Expected status code %v; got %v", http.StatusMethodNotAllowed, status)
 	}
 }
