@@ -8,10 +8,10 @@ import (
 )
 
 func TestMethodNotAllowed(t *testing.T) {
-	req, eres := http.NewRequest("HEAD", "/webhook", nil)
+	req, error := http.NewRequest("HEAD", "/webhook", nil)
 
-	if eres != nil {
-		t.Fatal(eres)
+	if error != nil {
+		t.Fatal(error)
 	}
 
 	bot := NewBot()
@@ -30,10 +30,10 @@ func TestMethodNotAllowed(t *testing.T) {
 func TestWrongVerifyMode(t *testing.T) {
 	queryParams := url.Values{"mode": {"invalid"}}
 
-	req, eres := http.NewRequest("GET", "/webhook?"+queryParams.Encode(), nil)
+	req, error := http.NewRequest("GET", "/webhook?"+queryParams.Encode(), nil)
 
-	if eres != nil {
-		t.Fatal(eres)
+	if error != nil {
+		t.Fatal(error)
 	}
 
 	bot := NewBot()
